@@ -1,0 +1,12 @@
+CREATE TABLE songs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    lyrics TEXT,
+    scale VARCHAR(100),
+    genre VARCHAR(100),
+    artist VARCHAR(255),
+    music_by VARCHAR(255),
+    lyrics_by VARCHAR(255),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
