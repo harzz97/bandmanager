@@ -79,6 +79,17 @@ func MasterListRoutes(r *gin.Engine, db *gorm.DB) {
 		c.JSON(http.StatusOK, song)
 	})
 
+	// Fetch a specific song by ID.
+	r.GET("/masterlist/:id", func(c *gin.Context) {
+		id, _ := strconv.Atoi(c.Param("id"))
+		song, err := dao.GetSongByID(db, uint(id))
+		if err != nil {
+			cfg.HandleError(c, err, "song not found", http.StatusNotFound)
+			return
+		}
+		c.JSON(http.StatusOK, song)
+	})
+
 	r.PUT("/masterlist/:id", func(c *gin.Context) {
 		id := c.Param("id")
 		var song models.Song

@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/harzz97/bandmanager/api"
 	"github.com/harzz97/bandmanager/cfg"
@@ -16,6 +17,7 @@ func main() {
 	db := cfg.InitDB()
 	r := gin.Default()
 
+	r.Use(cors.Default())
 	// Load routes
 	// api.AdminRoutes(r)
 	api.MasterListRoutes(r, db)

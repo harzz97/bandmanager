@@ -6,16 +6,23 @@ import "time"
 type Setlist struct {
 	ID        uint          `json:"id" gorm:"primaryKey"`
 	Name      string        `json:"name"`
-	EventDate time.Time     `json:"event-date"`
+	EventDate time.Time     `json:"eventDate"`
 	Songs     []SetlistSong `json:"songs" gorm:"foreignKey:SetlistID"`
 }
 
 // Represents a song entry within a setlist.
 type SetlistSong struct {
-	ID        uint   `json:"id" gorm:"primaryKey"`
-	SetlistID uint   `json:"setlist_id"`
-	SongID    uint   `json:"song_id"`
-	Musician  string `json:"musician"`
-	Notes     string `json:"notes"`
-	Position  int    `json:"position"`
+	SetlistID    uint   `json:"setlistID"`
+	SongID       uint   `json:"songID"`
+	SongPosition int    `json:"position" gorm:"column:position"`
+	PerformedBy  string `json:"performedBy" gorm:"column:musician"`
+	Notes        string `json:"notes"`
+}
+
+type SetlistSongExpanded struct {
+	Song
+	SetlistID    uint   `json:"setlistID"`
+	SongPosition int    `json:"position"`
+	PerformedBy  string `json:"performedBy"`
+	Notes        string `json:"notes"`
 }

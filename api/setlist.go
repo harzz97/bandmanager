@@ -95,11 +95,52 @@ func SetlistRoutes(r *gin.Engine, db *gorm.DB) {
 
 	// Remove a song from a setlist by song ID.
 	r.DELETE("/setlists/:id/songs/:song_id", func(c *gin.Context) {
+		setlistID, _ := strconv.Atoi(c.Param("id"))
 		songID, _ := strconv.Atoi(c.Param("song_id"))
-		if err := dao.RemoveSongFromSetlist(db, uint(songID)); err != nil {
+		if err := dao.RemoveSongFromSetlist(db, uint(setlistID), uint(songID)); err != nil {
 			cfg.HandleError(c, err, "Failed to remove song from setlist", http.StatusInternalServerError)
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"message": "Song removed from setlist"})
+	})
+
+	// Update a song from a setlist by song ID.
+	r.PATCH("/setlists/:id/songs/:song_id", func(c *gin.Context) {
+		setlistID, _ := strconv.Atoi(c.Param("id"))
+
+		songID, _ := strconv.Atoi(c.Param("song_id"))
+		var song models.SetlistSong
+		if err := c.ShouldBindJSON(&song); err != nil {
+			cfg.HandleError(c, err, "Invalid request body", http.StatusBadRequest)
+			return
+		}
+		song.SetlistID = uint(songID)
+		if err := dao.UpdateSongInSetlist(db, uint(setlistID), uint(songID), song); err != nil {
+			cfg.HandleError(c, err, "Failed to update song details", http.StatusInternalServerError)
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"message": "Song details update in the setlist"})
+	})
+
+	// GetSongsForSetlist fetches all songs linked to a specific setlist
+	r.GET("/setlists/:id/songs", func(c *gin.Context) {
+		setlistID, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid setlist ID"})
+			return
+		}
+
+		songs, err := dao.FetchSongsBySetlistID(db, setlistID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch songs"})
+			return
+		}
+
+		if len(songs) == 0 {
+			c.JSON(http.StatusNotFound, gin.H{"message": "No songs found for this setlist"})
+			return
+		}
+
+		c.JSON(http.StatusOK, songs)
 	})
 }

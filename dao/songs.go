@@ -42,3 +42,12 @@ func UpdateSong(db *gorm.DB, id string, song *models.Song) error {
 func DeleteSong(db *gorm.DB, id string) error {
 	return db.Delete(&models.Song{}, id).Error
 }
+
+func GetSongByID(db *gorm.DB, id uint) (*models.Song, error) {
+	var song models.Song
+	err := db.First(&song, id).Error
+	if err != nil {
+		return nil, err
+	}
+	return &song, nil
+}
