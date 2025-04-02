@@ -17,6 +17,14 @@ type SetlistSong struct {
 	SongPosition int    `json:"position" gorm:"column:position"`
 	PerformedBy  string `json:"performedBy" gorm:"column:musician"`
 	Notes        string `json:"notes"`
+	CurrScale    string `json:"currScale" gorm:"column:curr_scale"`
+}
+
+type SetlistSongUpdateReq struct {
+	SongPosition *uint   `json:"position" gorm:"column:position"`
+	PerformedBy  *string `json:"performedBy" gorm:"column:musician"`
+	Notes        *string `json:"notes"`
+	CurrScale    *string `json:"currScale" gorm:"column:curr_scale"`
 }
 
 type SetlistSongExpanded struct {
@@ -25,4 +33,5 @@ type SetlistSongExpanded struct {
 	SongPosition int    `json:"position"`
 	PerformedBy  string `json:"performedBy"`
 	Notes        string `json:"notes"`
+	CurrScale    string `json:"currScale"`
 }
